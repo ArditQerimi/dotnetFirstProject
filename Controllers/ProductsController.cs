@@ -4,6 +4,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotnetAPI.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Http.Headers;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Security.Claims;
+using Microsoft.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace EFCoreRelationships.Controllers
 {
@@ -12,9 +20,11 @@ namespace EFCoreRelationships.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly AppDbContext appDbContext;
+        private readonly UserManager<User> _userManager;
 
-        public ProductsController(AppDbContext appDbContext)
+        public ProductsController(UserManager<User> userManager, AppDbContext appDbContext)
         {
+            _userManager = userManager;
             this.appDbContext = appDbContext;
         }
 
@@ -191,40 +201,64 @@ namespace EFCoreRelationships.Controllers
 
           
         }
-
-        [HttpGet("getAll")]
+        [Authorize]
+        [HttpGet]
+        [Route("getAll")]
         public async Task<IActionResult> GetAll()
         {
+            try
+            {
 
-            var products = await appDbContext.Products
-                .Include(x => x.Size)
-                .Include(x => x.Colors)
-                .Select(x => new
-                {
-                    id = x.Id,
-                    name = x.Name,
-                    price = x.Price,
-                    category = x.Category == null ? null : new
-                    {
-                        id = x.Category.Id,
-                        name = x.Category.Name
-                    },
-                    categoryId = x.CategoryId,
-                    size = x.Size == null ? null : new
-                    {
-                        id = x.Size.Id,
-                        name = x.Size.Name,
-                        productId = x.Id
-                    },
-                    colors = x.Colors == null ? null : x.Colors.Select(c => new
-                    {
-                        id = c.Id,
-                        name = c.Name
-                    })
-                }).ToListAsync();
+                var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
 
-            return Ok(products);
+                var jwtHandler = new JwtSecurityTokenHandler();
+                var jwtToken = jwtHandler.ReadJwtToken(accessToken);
+
+                var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+
+                var user = await appDbContext.Users.FirstOrDefaultAsync(u=>u.Email == email);
+                //var userId = user.Id;
+
+                var products2 = await appDbContext.Products.Where(x => x.UserId == user.Id).ToListAsync();
+
+
+                var products = await appDbContext.Products
+                    .Where(x => x.UserId == user.Id)
+                    .Include(x => x.Size)
+                    .Include(x => x.Colors)
+                    .Select(x => new
+                    {
+                        id = x.Id,
+                        name = x.Name,
+                        price = x.Price,
+                        userId=x.UserId,
+                        category = x.Category == null ? null : new
+                        {
+                            id = x.Category.Id,
+                            name = x.Category.Name
+                        },
+                        categoryId = x.CategoryId,
+                        size = x.Size == null ? null : new
+                        {
+                            id = x.Size.Id,
+                            name = x.Size.Name,
+                            productId = x.Id
+                        },
+                        colors = x.Colors == null ? null : x.Colors.Select(c => new
+                        {
+                            id = c.Id,
+                            name = c.Name
+                        })
+                    }).ToListAsync();
+
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
 
 
         [HttpGet("getCategories")]

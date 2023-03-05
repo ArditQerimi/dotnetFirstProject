@@ -1,5 +1,6 @@
 ﻿using dotnetAPI.Data;
 using dotnetAPI.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ namespace dotnetAPI.Controllers
             this.appDbContext = appDbContext;
         }
 
-
+        [Authorize]
         [HttpGet("AllSizes")]
         public async Task<IActionResult> GetAllSizes()
         {
