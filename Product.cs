@@ -25,6 +25,6 @@ namespace dotnetAPI
 
         public int UserId { get; set; }
 
-
+    
     }
 }

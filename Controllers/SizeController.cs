@@ -19,7 +19,6 @@ namespace dotnetAPI.Controllers
             this.appDbContext = appDbContext;
         }
 
-        [Authorize]
         [HttpGet("AllSizes")]
         public async Task<IActionResult> GetAllSizes()
         {

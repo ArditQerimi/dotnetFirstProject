@@ -44,6 +44,7 @@ namespace dotnetAPI.Controllers
                 {
                     new Claim("Email", user.Email),
                     new Claim("UserName", user.UserName),
+                    new Claim("UserId", user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 

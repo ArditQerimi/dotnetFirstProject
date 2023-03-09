@@ -97,10 +97,18 @@ namespace EFCoreRelationships.Controllers
             return Ok(products);
         }
 
-
+        [Authorize]
         [HttpPost("CreateOneProduct")]
         public async Task<IActionResult> CreateOneProduct([FromBody] CreateProductDto productDto)
         {
+            var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var jwtToken = jwtHandler.ReadJwtToken(accessToken);
+
+            var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+
+            var user = await appDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
             var category = await appDbContext.Categories.FindAsync(productDto.CategoryId);
             if (category == null)
             {
@@ -130,7 +138,9 @@ namespace EFCoreRelationships.Controllers
                 Price = productDto.Price,
                 Category = category,
                 Size = size,
-                Colors = colors
+                Colors = colors,
+                UserId = (int)user.Id
+                
             };
 
             await appDbContext.Products.AddAsync(product);
@@ -259,7 +269,52 @@ namespace EFCoreRelationships.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getAllProducts")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            try
+            {
 
+
+
+                var products = await appDbContext.Products
+                    
+                    .Include(x => x.Size)
+                    .Include(x => x.Category)
+                    .Include(x => x.Colors)
+                    .Select(x => new
+                    {
+                        id = x.Id,
+                        name = x.Name,
+                        price = x.Price,
+                        userId = x.UserId,
+                        category = x.Category == null ? null : new
+                        {
+                            id = x.Category.Id,
+                            name = x.Category.Name
+                        },
+                        categoryId = x.CategoryId,
+                        size = x.Size == null ? null : new
+                        {
+                            id = x.Size.Id,
+                            name = x.Size.Name,
+                            productId = x.Id
+                        },
+                        colors = x.Colors == null ? null : x.Colors.Select(c => new
+                        {
+                            id = c.Id,
+                            name = c.Name
+                        })
+                    }).ToListAsync();
+
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("getCategories")]
         public async Task<IActionResult> GetCategories()
