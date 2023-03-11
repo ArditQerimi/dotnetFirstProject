@@ -12,6 +12,9 @@ using System;
 using System.Security.Claims;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
+using System.Net;
+using dotnetAPI.Interfaces;
 
 namespace EFCoreRelationships.Controllers
 {
@@ -61,6 +64,43 @@ namespace EFCoreRelationships.Controllers
             }).ToListAsync();
                 return Ok(products);
         }
+
+
+        // Assuming you have a DbContext with a Driver DbSet and a Person DbSet
+
+        [HttpPost("Filter")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        public async Task<ActionResult<List<Product>>> Find([FromBody] IProductFilter filter)
+        {
+            try
+            {
+                var query = appDbContext.Products
+                    .Include(x => x.Size)
+                    .Include(x => x.Category)
+                    .Include(x => x.Colors)
+                     .AsQueryable();
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    query = query.Where(d => d.Name.Contains(filter.Name));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Color))
+                {
+                    query = query.Where(d => d.Colors.Select(c => c.Name).Contains(filter.Color));
+                }
+
+                var result = await query.ToListAsync();
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
 
 
         [HttpGet("GetOneProduct")]
