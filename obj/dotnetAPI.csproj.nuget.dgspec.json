@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ccc\\Desktop\\Projects\\dotnetFirstProject\\dotnetAPI.csproj": {}
+    "C:\\Users\\besmi\\OneDrive\\Desktop\\Projects\\VueJs - OnlineShopping\\.Net-app\\dotnetAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ccc\\Desktop\\Projects\\dotnetFirstProject\\dotnetAPI.csproj": {
+    "C:\\Users\\besmi\\OneDrive\\Desktop\\Projects\\VueJs - OnlineShopping\\.Net-app\\dotnetAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ccc\\Desktop\\Projects\\dotnetFirstProject\\dotnetAPI.csproj",
+        "projectUniqueName": "C:\\Users\\besmi\\OneDrive\\Desktop\\Projects\\VueJs - OnlineShopping\\.Net-app\\dotnetAPI.csproj",
         "projectName": "dotnetAPI",
-        "projectPath": "C:\\Users\\ccc\\Desktop\\Projects\\dotnetFirstProject\\dotnetAPI.csproj",
-        "packagesPath": "C:\\Users\\ccc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ccc\\Desktop\\Projects\\dotnetFirstProject\\obj\\",
+        "projectPath": "C:\\Users\\besmi\\OneDrive\\Desktop\\Projects\\VueJs - OnlineShopping\\.Net-app\\dotnetAPI.csproj",
+        "packagesPath": "C:\\Users\\besmi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\besmi\\OneDrive\\Desktop\\Projects\\VueJs - OnlineShopping\\.Net-app\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ccc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\besmi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

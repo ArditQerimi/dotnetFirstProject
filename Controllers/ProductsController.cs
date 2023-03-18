@@ -70,19 +70,33 @@ namespace EFCoreRelationships.Controllers
 
         [HttpPost("Filter")]
         [ProducesResponseType(StatusCodes.Status302Found)]
-        public async Task<ActionResult<List<Product>>> Find([FromBody] IProductFilter filter)
+        public async Task<IActionResult> Find([FromBody] IProductFilter filter)
         {
             try
             {
+
+                
+
+
                 var query = appDbContext.Products
                     .Include(x => x.Size)
                     .Include(x => x.Category)
                     .Include(x => x.Colors)
                      .AsQueryable();
 
+
+
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
                     query = query.Where(d => d.Name.Contains(filter.Name));
+                } 
+                if (!string.IsNullOrEmpty(filter.Size))
+                {
+                    query = query.Where(d => d.Size.Name.Contains(filter.Size));
+                }
+                if (!string.IsNullOrEmpty(filter.Category))
+                {
+                    query = query.Where(d => d.Category.Name.Contains(filter.Category));
                 }
 
                 if (!string.IsNullOrEmpty(filter.Color))
@@ -90,9 +104,49 @@ namespace EFCoreRelationships.Controllers
                     query = query.Where(d => d.Colors.Select(c => c.Name).Contains(filter.Color));
                 }
 
-                var result = await query.ToListAsync();
+                if (filter.Price != null && filter.Price.Length == 2)
+                {
+                    double minPrice = filter.Price[0];
+                    double maxPrice = filter.Price[1];
+                    query = query.Where(p => p.Price >= minPrice && p.Price <= maxPrice);
+                }
 
-                return result;
+                var result = query.Select(x => new
+                {
+                    id = x.Id,
+                    name = x.Name,
+                    price = x.Price,
+                    userId = x.UserId,
+                    category = x.Category == null ? null : new
+                    {
+                        id = x.Category.Id,
+                        name = x.Category.Name
+                    },
+                    categoryId = x.CategoryId,
+                    size = x.Size == null ? null : new
+                    {
+                        id = x.Size.Id,
+                        name = x.Size.Name,
+                        productId = x.Id
+                    },
+                    colors = x.Colors == null ? null : x.Colors.Select(c => new
+                    {
+                        id = c.Id,
+                        name = c.Name
+                    })
+                }).ToList();
+
+                //var result = await query.ToListAsync();
+
+
+                //            var filteredProducts = products
+                //.Where(p => p.name.Contains(filter.Name))
+                //.Where(p => filter.Price == null || (p.price >= filter.Price[0] && p.price <= filter.Price[1]))
+                //.Where(p => p.colors.Any(c => c.name == filter.Color))
+                //.ToList();
+
+
+                return Ok(result);
             }
             catch (Exception e)
             {
