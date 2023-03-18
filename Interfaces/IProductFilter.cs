@@ -10,5 +10,7 @@ namespace dotnetAPI.Interfaces
         public string? Color { get; set; }
         public string? Size { get; set; }
         public string? Category { get; set; }
+
+        public string? User { get; set; }
     }
 }

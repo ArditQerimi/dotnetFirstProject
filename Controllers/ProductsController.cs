@@ -82,6 +82,7 @@ namespace EFCoreRelationships.Controllers
                     .Include(x => x.Size)
                     .Include(x => x.Category)
                     .Include(x => x.Colors)
+                    .Include(x => x.User)
                      .AsQueryable();
 
 
@@ -89,6 +90,10 @@ namespace EFCoreRelationships.Controllers
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
                     query = query.Where(d => d.Name.Contains(filter.Name));
+                } 
+                if (!string.IsNullOrEmpty(filter.User))
+                {
+                    query = query.Where(d => d.User.UserName.Contains(filter.User));
                 } 
                 if (!string.IsNullOrEmpty(filter.Size))
                 {
@@ -117,6 +122,13 @@ namespace EFCoreRelationships.Controllers
                     name = x.Name,
                     price = x.Price,
                     userId = x.UserId,
+              user = x.User == null ? null : new
+              {
+                  id = x.User.Id,
+                  firstName=x.User.FirstName,
+                  lastName=x.User.LastName,
+                  userName=x.User.UserName
+              },
                     category = x.Category == null ? null : new
                     {
                         id = x.Category.Id,
