@@ -22,6 +22,20 @@ namespace dotnetAPI.Controllers
             this.appDbContext = appDbContext;
         }
 
+        //private async Task<User> GetUserFromToken()
+        //{
+        //    var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
+        //    var jwtHandler = new JwtSecurityTokenHandler();
+        //    var jwtToken = jwtHandler.ReadJwtToken(accessToken);
+
+        //    var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+
+        //    var user = await appDbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+        //    return user;
+        //}
+
 
 
         [Authorize]
@@ -31,6 +45,8 @@ namespace dotnetAPI.Controllers
         {
             try
             {
+
+                //var user = this.GetUserFromToken();
 
                 var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
 
@@ -50,7 +66,7 @@ namespace dotnetAPI.Controllers
                         product = x.Product == null ? null : new
                         
                              {
-                                    id = x.Id,
+                                    id = x.Product.Id,
                             name = x.Product.Name,
                             price = x.Product.Price,
                             category = x.Product.Category == null ? null : new
@@ -105,12 +121,15 @@ namespace dotnetAPI.Controllers
                 cartItem.Quantity++;
             }
 
-            var foundedProduct = await appDbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-            var total = foundedProduct?.Price * cartItem.Quantity;
-
             await appDbContext.SaveChangesAsync();
 
-            return Ok();
+            var newCart = new CartItem
+            {
+                Quantity = cartItem.Quantity,
+                Total = cartItem.Total * cartItem.Quantity,
+            };
+
+            return Ok(newCart);
         }
 
 
@@ -140,7 +159,13 @@ namespace dotnetAPI.Controllers
                 await appDbContext.SaveChangesAsync();
             }
 
-            return Ok();
+            var newCart = new CartItem
+            {
+                Quantity = cartItem.Quantity,
+                Total = cartItem.Total * cartItem.Quantity,
+            };
+
+            return Ok(newCart);
         }
 
 
@@ -167,7 +192,7 @@ namespace dotnetAPI.Controllers
             }
 
 
-            return Ok();
+            return Ok(cartItem.Id);
         }
 
 
@@ -230,7 +255,7 @@ namespace dotnetAPI.Controllers
             };
             await appDbContext.CartItems.AddAsync(cart);
             await appDbContext.SaveChangesAsync();
-            return Ok(cart.Id);
+            return Ok(cart);
 
         }
 
