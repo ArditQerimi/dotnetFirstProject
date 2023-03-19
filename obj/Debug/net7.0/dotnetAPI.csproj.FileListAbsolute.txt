@@ -336,3 +336,7 @@ C:\Users\ccc\Desktop\Projects\dotnetFirstProject\bin\Debug\net7.0\EntityFramewor
 C:\Users\ccc\Desktop\Projects\dotnetFirstProject\bin\Debug\net7.0\EntityFrameworkCore.QueryBuilder.Abstractions.dll
 C:\Users\ccc\Desktop\Projects\dotnetFirstProject\bin\Debug\net7.0\LinqKit.Core.dll
 C:\Users\ccc\Desktop\Projects\dotnetFirstProject\bin\Debug\net7.0\LinqKit.Microsoft.EntityFrameworkCore.dll
+C:\Users\besmi\OneDrive\Desktop\Projects\VueJs - OnlineShopping\.Net-app\bin\Debug\net7.0\EntityFrameworkCore.QueryBuilder.dll
+C:\Users\besmi\OneDrive\Desktop\Projects\VueJs - OnlineShopping\.Net-app\bin\Debug\net7.0\EntityFrameworkCore.QueryBuilder.Abstractions.dll
+C:\Users\besmi\OneDrive\Desktop\Projects\VueJs - OnlineShopping\.Net-app\bin\Debug\net7.0\LinqKit.Core.dll
+C:\Users\besmi\OneDrive\Desktop\Projects\VueJs - OnlineShopping\.Net-app\bin\Debug\net7.0\LinqKit.Microsoft.EntityFrameworkCore.dll

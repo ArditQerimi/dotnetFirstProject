@@ -22,6 +22,7 @@ namespace dotnetAPI.Data
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
     }
 

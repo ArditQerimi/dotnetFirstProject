@@ -61,6 +61,7 @@ namespace dotnetAPI.Controllers
             return Unauthorized();
         }
 
+
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto register)
@@ -81,8 +82,25 @@ namespace dotnetAPI.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            var authClaims = new List<Claim>
+    {
+        new Claim("Email", user.Email),
+        new Claim("UserName", user.UserName),
+        new Claim("UserId", user.Id.ToString()),
+        new Claim("FirstName", user.FirstName),
+        new Claim("LastName", user.LastName),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+
+            var token = GetToken(authClaims);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            });
         }
+
 
 
 
